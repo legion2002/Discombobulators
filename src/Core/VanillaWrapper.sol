@@ -6,9 +6,12 @@ import {IERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/IER
 
 // PUSH Comm Contract Interface
 interface IPUSHCommInterface {
-    function sendNotification(address _channel, address _recipient, bytes calldata _identity) external;
+    function sendNotification(
+        address _channel,
+        address _recipient,
+        bytes calldata _identity
+    ) external;
 }
-
 
 contract VanillaWrapper is ERC20 {
     /** ============================================
@@ -94,26 +97,25 @@ contract VanillaWrapper is ERC20 {
         uint256 tempAmount = withdrawals[msg.sender].amount;
         _burn(address(this), tempAmount);
         asset.transferFrom(address(this), msg.sender, tempAmount);
-       
 
-       IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa).sendNotification(
-    0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
-    msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
-    bytes(
-        string(
-           
-            abi.encodePacked(
-                "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
-                "+", // segregator
-                "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
-                "+", // segregator
-                "Transfer", // this is notificaiton title
-                "+", // segregator
-                abi.encodePacked(tempAmount, " from", address(this))// notification body
-            )
-        )
-    )
-    );
+        IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa)
+            .sendNotification(
+                0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+                msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+                bytes(
+                    string(
+                        abi.encodePacked(
+                            "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                            "+", // segregator
+                            "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                            "+", // segregator
+                            "Transfer", // this is notificaiton title
+                            "+", // segregator
+                            abi.encodePacked(tempAmount, " from", address(this)) // notification body
+                        )
+                    )
+                )
+            );
     }
 
     function lodgeConflict(address _withdrawalAddress) public {
@@ -131,10 +133,11 @@ contract VanillaWrapper is ERC20 {
         );
     }
 
-    function returnVerdict(bool isWithdrawApproved, address _withdrawalAddress, address _transferTo)
-        public
-        onlyGovernor
-    {
+    function returnVerdict(
+        bool isWithdrawApproved,
+        address _withdrawalAddress,
+        address _transferTo
+    ) public onlyGovernor {
         if (isWithdrawApproved) {
             uint256 tempAmount = withdrawals[_withdrawalAddress].amount;
             withdrawals[_withdrawalAddress] = WithdrawRequest(
@@ -176,25 +179,31 @@ contract VanillaWrapper is ERC20 {
     ) external onlyGovernor {
         _burn(_from, amount);
         _mint(_to, amount);
-        
-        IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa).sendNotification(
-0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
-    msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
-    bytes(
-        string(
-           
-            abi.encodePacked(
-                "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
-                "+", // segregator
-                "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
-                "+", // segregator
-                "Transfer", // this is notificaiton title
-                "+", // segregator
-                abi.encodePacked(amount, "burned from", _from, " and returned to ", _to)// notification body
-            )
-        )
-    )
-    );
+
+        IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa)
+            .sendNotification(
+                0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+                msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+                bytes(
+                    string(
+                        abi.encodePacked(
+                            "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                            "+", // segregator
+                            "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                            "+", // segregator
+                            "Transfer&Burn", // this is notificaiton title
+                            "+", // segregator
+                            abi.encodePacked(
+                                amount,
+                                "burned from",
+                                _from,
+                                " and returned to ",
+                                _to
+                            ) // notification body
+                        )
+                    )
+                )
+            );
     }
 
     constructor(
