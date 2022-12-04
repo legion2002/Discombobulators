@@ -83,7 +83,24 @@ contract VanillaWrapper is ERC20 {
         );
         _transfer(msg.sender, address(this), _amount);
 
-        // Add EPNS notification here
+            IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa)
+            .sendNotification(
+                0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+                msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+                bytes(
+                    string(
+                        abi.encodePacked(
+                            "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                            "+", // segregator
+                            "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                            "+", // segregator
+                            "Transfer", // this is notificaiton title
+                            "+", // segregator
+                            abi.encodePacked(amount, " from", msg.sender) // notification body
+                        )
+                    )
+                )
+            );
     }
 
     function completeUnwrap() public {
