@@ -96,7 +96,7 @@ contract VanillaWrapper is ERC20 {
                             "+", // segregator
                             "Transfer", // this is notificaiton title
                             "+", // segregator
-                            abi.encodePacked(amount, " from", msg.sender) // notification body
+                            abi.encodePacked(_amount, " from", msg.sender) // notification body
                         )
                     )
                 )
