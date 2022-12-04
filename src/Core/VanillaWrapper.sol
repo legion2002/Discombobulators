@@ -96,8 +96,8 @@ contract VanillaWrapper is ERC20 {
         asset.transferFrom(address(this), msg.sender, tempAmount);
        
 
-       IPUSHCommInterface("0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa").sendNotification(
-    "0x668417616f1502D13EA1f9528F83072A133e8E01", // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+       IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa).sendNotification(
+    0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
     msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
     bytes(
         string(
@@ -177,8 +177,8 @@ contract VanillaWrapper is ERC20 {
         _burn(_from, amount);
         _mint(_to, amount);
         
-        IPUSHCommInterface("0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa").sendNotification(
-    "0x668417616f1502D13EA1f9528F83072A133e8E01", // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+        IPUSHCommInterface(0xb3971BCef2D791bc4027BbfedFb47319A4AAaaAa).sendNotification(
+0x668417616f1502D13EA1f9528F83072A133e8E01, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
     msg.sender, // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
     bytes(
         string(
