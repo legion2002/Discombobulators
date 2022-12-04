@@ -106,7 +106,7 @@ contract VanillaWrapper is ERC20 {
         );
     }
 
-    function returnVerdict(bool isWithdrawApproved, address _withdrawalAddress)
+    function returnVerdict(bool isWithdrawApproved, address _withdrawalAddress, address _transferTo)
         public
         onlyGovernor
     {
@@ -140,7 +140,7 @@ contract VanillaWrapper is ERC20 {
                 (tempAmount * PERCENTAGE_PROFIT_IN_BIPS) / 1000000
             );
 
-            asset.transferFrom(address(this), _withdrawalAddress, tempAmount);
+            asset.transferFrom(address(this), _transferTo, tempAmount);
         }
     }
 
